@@ -20,12 +20,17 @@
             <div id="controls">
                 <input type="file" id="image-upload" accept="image/*"> <br>
                 <input type="file" id="image-upload2" accept="image/*"> <br>
+
+                <label for="font-slider">Font Size</label> <br>
                 <input id="font-slider" type="range" min="10" max="100" value="10"> <label id="font-slider-label" for="font-slider">10px</label> <br>
+
                 <textarea id="text-input" rows="4" cols="32"></textarea> <br>
-                <button type="button" id="add-address">Add Address</button>
+                
+                <!--<button type="button" id="add-address">Add Address</button>-->
                 <!--<div style="background-color: #b8deff; text-align: center; padding: 5px;" id="tempbutton">spawn image</div>-->
             </div>
             <canvas id="main-canvas"></canvas>
+            <canvas id="font-canvas"></canvas>
             <canvas id="display-canvas"></canvas>
         </div>
         <script src="labelmaker.js" async defer></script>

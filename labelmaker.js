@@ -4,7 +4,12 @@
 let mainCanvas = document.getElementById("main-canvas");
 let mainctx = mainCanvas.getContext("2d");
 mainCanvas.style.display = "none";
-mainctx.font = "10px Helvetica";
+
+/** @type {HTMLCanvasElement} */
+let fontCanvas = document.getElementById("font-canvas");
+let fontctx = fontCanvas.getContext("2d");
+fontCanvas.style.display = "none";
+fontctx.font = "10px Helvetica";
 
 /** @type {HTMLCanvasElement} */
 let displayCanvas = document.getElementById("display-canvas");
@@ -12,10 +17,25 @@ let displayctx = displayCanvas.getContext("2d");
 
 let imageInput = document.getElementById("image-upload");
 let textInput = document.getElementById("text-input");
-let addressButton = document.getElementById("add-address");
+//let addressButton = document.getElementById("add-address");
 
 function updateDisplayCanvas() {
+    displayctx.clearRect(0, 0, displayCanvas.width, displayCanvas.height);
     displayctx.drawImage(mainCanvas, 0, 0, displayCanvas.width, displayCanvas.height);
+    displayctx.drawImage(fontCanvas, 0, 0, displayCanvas.width, displayCanvas.height);
+}
+
+function resizeEditingCanvases(width, height) {
+    mainCanvas.height = height;
+    mainCanvas.width  = width;
+    fontCanvas.height = height;
+    fontCanvas.width  = width;
+}
+
+// May not be needed later when I make the display canvas fixed in size.
+function resizeDisplayCanvas(width, height) {
+    displayCanvas.height = height / 2;
+    displayCanvas.width = width / 2;
 }
 
 // Create an Image object and use the imageFile uploaded to create a URL
@@ -28,14 +48,11 @@ function imageHelper(imageFile) {
     // Add an event handler property for this image object
     image.onload = () => {
         // Resizing the canvas clears it but for this project that's fine.
-        mainCanvas.height = image.height;
-        mainCanvas.width = image.width;
-        console.log(image.height);
+        resizeEditingCanvases(image.width, image.height);
         mainctx.drawImage(image, 0, 0);
 
         // Another canvas for displaying images in reduced size. Main canvas is used for editing.
-        displayCanvas.height = mainCanvas.height / 2;
-        displayCanvas.width  = mainCanvas.width  / 2;
+        resizeDisplayCanvas(mainCanvas.width, mainCanvas.height);
         updateDisplayCanvas();
     }
 }
@@ -44,12 +61,16 @@ function canvasBGChange(event) {
     imageHelper(event.target.files[0]);
 }
 
+function clearFontCanvas() {
+
+}
+
 function addAddress(event) {
     let tokenizedInput = textInput.value.split("\n");
     let fontSize = getFontSize();
 
     for (let i = 0; i < tokenizedInput.length; i++) {
-        mainctx.fillText(tokenizedInput[i], 100, 100 + (i * fontSize));
+        fontctx.fillText(tokenizedInput[i], 100, 100 + (i * fontSize));
         updateDisplayCanvas();
     }
     
@@ -67,7 +88,13 @@ function setFontLabel() {
 
 function fontSizeUpdate() {
     setFontLabel();
-    mainctx.font = `${getFontSize()}px Helvetica`;
+    fontctx.font = `${getFontSize()}px Helvetica`;
+}
+
+function textUpdate() {
+    fontctx.clearRect(0, 0, fontCanvas.width, fontCanvas.height);
+    fontctx.fillText(textInput.value, 100, 100);
+    updateDisplayCanvas();
 }
 
 function saveImage(type) {
@@ -78,9 +105,10 @@ function saveImage(type) {
 // This app only needs one image uploaded at a time to be used as a background.
 // So changing
 imageInput.addEventListener("change", canvasBGChange, false);
-addressButton.addEventListener("click", addAddress, false);
+//addressButton.addEventListener("input", addAddress, false);
 fontSlider.addEventListener("input", fontSizeUpdate, false);
 
+textInput.addEventListener("input", textUpdate, false);
 
 /* Notes:
 - Because the display canvas is a smaller version of the main canvas, the text drawn will visually be smaller
