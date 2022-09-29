@@ -1,8 +1,13 @@
 'use strict'
 
 /** @type {HTMLCanvasElement} */
-let canvas = document.getElementById("label-zone");
-let ctx = canvas.getContext("2d");
+let mainCanvas = document.getElementById("main-canvas");
+let mainctx = mainCanvas.getContext("2d");
+mainCanvas.style.display = "none";
+
+/** @type {HTMLCanvasElement} */
+let displayCanvas = document.getElementById("display-canvas");
+let displayctx = displayCanvas.getContext("2d");
 
 let imageInput = document.getElementById("image-upload");
 let imageInput2 = document.getElementById("image-upload2");
@@ -17,9 +22,16 @@ function imageHelper(imageFile) {
     image.src = imageURL;
     // Add an event handler property for this image object
     image.onload = () => {
-        canvas.height = image.height;
-        canvas.width = image.width;
-        ctx.drawImage(image, 0, 0);
+        // Resizing the canvas clears it but for this project that's fine.
+        mainCanvas.height = image.height;
+        mainCanvas.width = image.width;
+        console.log(image.height);
+        mainctx.drawImage(image, 0, 0);
+
+        // Another canvas for displaying images in reduced size. Main canvas is used for editing.
+        displayCanvas.height = mainCanvas.height / 2;
+        displayCanvas.width  = mainCanvas.width  / 2;
+        displayctx.drawImage(mainCanvas, 0, 0, image.width / 2, image.height / 2);
     }
 }
 
@@ -30,9 +42,9 @@ function imageHelper2(imageFile, x,y,w,h) {
     image.src = imageURL;
     // Add an event handler property for this image object
     image.onload = () => {
-        canvas.height = image.height;
-        canvas.width = image.width;
-        ctx.drawImage(image, x, y, w, h);
+        mainCanvas.height = image.height;
+        mainCanvas.width = image.width;
+        mainctx.drawImage(image, x, y, w, h);
     }
 }
 
@@ -64,3 +76,8 @@ tempbutton.addEventListener("click", tempimage, false);
 //  still resized the canvas to be the full size. The resizing itself seems to clear the canvas.
 //  Side note: If I wanted to resize the canvas without loss of drawn pixels, I can use the getImageData function.
 //   Alternatively, I could keep a list of images in use and their properties in a stack. Depends, for a game maybe, for simple drawing that's overly complex.
+
+// ToDo: I want to resize the source image for displaying on the webpage but I don't want the output image
+//  to be resized. I think I will have an canvas that isn't being displayed as the main canvas and a second
+//  canvas to take the main canvas' image and display it smaller.
+//  Editing the image and saving it will be done using the main canvas.
