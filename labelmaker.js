@@ -66,13 +66,7 @@ function clearFontCanvas() {
 }
 
 function addAddress(event) {
-    let tokenizedInput = textInput.value.split("\n");
-    let fontSize = getFontSize();
-
-    for (let i = 0; i < tokenizedInput.length; i++) {
-        fontctx.fillText(tokenizedInput[i], 100, 100 + (i * fontSize));
-        updateDisplayCanvas();
-    }
+    
     
 }
 
@@ -93,7 +87,13 @@ function fontSizeUpdate() {
 
 function textUpdate() {
     fontctx.clearRect(0, 0, fontCanvas.width, fontCanvas.height);
-    fontctx.fillText(textInput.value, 100, 100);
+
+    let tokenizedInput = textInput.value.split("\n");
+    let fontSize = getFontSize();
+    for (let i = 0; i < tokenizedInput.length; i++) {
+        fontctx.fillText(tokenizedInput[i], 100, 100 + (i * fontSize));
+    }
+
     updateDisplayCanvas();
 }
 
