@@ -1,0 +1,7 @@
+#main {
+    display: flex;
+}
+
+#label-zone {
+    border: 1px solid black
+}
