@@ -52,6 +52,8 @@ function imageHelper(imageFile) {
         resizeEditingCanvases(image.width, image.height);
         mainctx.drawImage(image, 0, 0);
 
+        updateFontCanvas(); // Redraw the text input after drawing the image.
+
         // Another canvas for displaying images in reduced size. Main canvas is used for editing.
         resizeDisplayCanvas(mainCanvas.width, mainCanvas.height);
         updateDisplayCanvas();
@@ -82,23 +84,26 @@ function fontSizeUpdate() {
     setFontLabel();
     fontctx.font = `${getFontSize()}px Helvetica`;
     ySlider.setAttribute("min", getFontSize()); // So that the text isn't hidden offscreen
-    textUpdate();
 }
 
-function textUpdate() {
+// updates the font canvas and then the display canvas.
+// perhaps I should remove the updateDisplayCanvas call so that I can call this in the imageHelper.
+// I would likely need another function to call updateDisplayCanvas during an event.
+function updateFontCanvas() {
     fontctx.clearRect(0, 0, fontCanvas.width, fontCanvas.height);
+
+    fontSizeUpdate(); // Make sure we're using the right font properties. Also canvas resizing in imageHelper clears the set font properties.
 
     let tokenizedInput = textInput.value.split("\n");
     let fontSize = getFontSize();
     for (let i = 0; i < tokenizedInput.length; i++) {
         fontctx.fillText(tokenizedInput[i], Number(xSlider.value), Number(ySlider.value) + (i * fontSize));
     }
-
-    updateDisplayCanvas();
 }
 
-function updatexSlider(xmin, xmax, ymin, ymax) {
-
+function textUpdate() {
+    updateFontCanvas();
+    updateDisplayCanvas();
 }
 
 function saveImage(type) {
@@ -110,7 +115,7 @@ function saveImage(type) {
 // So changing
 imageInput.addEventListener("change", canvasBGChange, false);
 //addressButton.addEventListener("input", addAddress, false);
-fontSlider.addEventListener("input", fontSizeUpdate, false);
+fontSlider.addEventListener("input", textUpdate, false);
 
 textInput.addEventListener("input", textUpdate, false);
 xSlider.addEventListener("input", textUpdate, false);
