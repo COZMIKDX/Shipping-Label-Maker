@@ -1,4 +1,5 @@
 'use strict'
+let jsPDF = window.jspdf.jsPDF;
 
 /** @type {HTMLCanvasElement} */
 let mainCanvas = document.getElementById("main-canvas");
@@ -26,6 +27,8 @@ let xSlider =  document.getElementById("xpos");
 let ySlider = document.getElementById("ypos");
 let saveButton = document.getElementById("save-button");
 let downloadButton = document.getElementById("download-button");
+
+let doc = new jsPDF('l', 'px', [saveCanvas.width, saveCanvas.height]);
 
 let dataBlobList = [];
 
@@ -74,6 +77,8 @@ function imageHelper(imageFile) {
         
         ySlider.setAttribute("max", fontCanvas.height);
         if (ySlider.value > fontCanvas.height) { ySlider.value = fontCanvas.height; }
+
+        doc = makeNewPDF();
     }
 }
 
@@ -117,18 +122,24 @@ function textUpdate() {
     updateDisplayCanvas();
 }
 
-function saveImageBlob() {
+function updateSaveCanvas() {
     savectx.clearRect(0, 0, saveCanvas.width, saveCanvas.height);
     savectx.drawImage(mainCanvas, 0, 0, saveCanvas.width, saveCanvas.height);
     savectx.drawImage(fontCanvas, 0, 0, saveCanvas.width, saveCanvas.height);
+}
+
+function saveImageBlob() {
+    updateSaveCanvas();
 
     saveCanvas.toBlob((blob) => {
         dataBlobList.push(blob);
     },"image/png");
 
     textInput.value = "";
-    updateDisplayCanvas(); // To clear the text in the image.
+    textUpdate(); // To clear the text in the image.
     downloadButton.disabled = false;
+
+    makePDF();
 }
 
 function downloadImagesBlob() {
@@ -141,8 +152,25 @@ function downloadImagesBlob() {
             saveAs(blob, "hello.zip");
             dataBlobList = [];
         });
+}
 
-    downloadButton.disabled = true;
+function makeNewPDF() {
+    return new jsPDF('l', 'px', [saveCanvas.width, saveCanvas.height]);
+}
+
+function addImageToPDF() {
+    updateSaveCanvas();
+    doc.addImage(saveCanvas, 'PNG', 0, 0, saveCanvas.width, saveCanvas.height);
+    doc.addPage([saveCanvas.width, saveCanvas.height], 'l');
+    textInput.value = "";
+    textUpdate(); // To clear the text in the image.
+    downloadButton.disabled = false;
+}
+
+function downloadPDF() {
+    let length = doc.internal.getNumberOfPages();
+    doc.deletePage(length); // delete the last page as it wasn't used to make a label.
+    doc.save("shipping_labels.pdf");
 }
 
 // This app only needs one image uploaded at a time to be used as a background.
@@ -154,8 +182,8 @@ fontSlider.addEventListener("input", textUpdate, false);
 textInput.addEventListener("input", textUpdate, false);
 xSlider.addEventListener("input", textUpdate, false);
 ySlider.addEventListener("input", textUpdate, false);
-saveButton.addEventListener("click", saveImageBlob, false);
-downloadButton.addEventListener("click", downloadImagesBlob, false);
+saveButton.addEventListener("click", addImageToPDF, false);
+downloadButton.addEventListener("click", downloadPDF, false);
 
 /* Notes:
 */
