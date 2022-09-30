@@ -43,8 +43,8 @@ function resizeEditingCanvases(width, height) {
     mainCanvas.width  = width;
     fontCanvas.height = height;
     fontCanvas.width  = width;
-    saveCanvas.height = height;
-    saveCanvas.width  = width;
+    saveCanvas.height = width; // swapped to be in portait orientation in pdf.
+    saveCanvas.width  = height;
 }
 
 // May not be needed later when I make the display canvas fixed in size.
@@ -122,10 +122,24 @@ function textUpdate() {
     updateDisplayCanvas();
 }
 
+function degToRad(degree) {
+    return degree * (Math.PI / 180);
+}
+
 function updateSaveCanvas() {
+    savectx.resetTransform();
     savectx.clearRect(0, 0, saveCanvas.width, saveCanvas.height);
-    savectx.drawImage(mainCanvas, 0, 0, saveCanvas.width, saveCanvas.height);
-    savectx.drawImage(fontCanvas, 0, 0, saveCanvas.width, saveCanvas.height);
+    // Transform for 90 degree rotation
+    // savectx.translate(saveCanvas.width, 0);
+    // savectx.rotate(degToRad(90));
+
+    savectx.translate(0, saveCanvas.height);
+    savectx.rotate(degToRad(270));
+
+    
+    savectx.drawImage(mainCanvas, 0, 0, mainCanvas.width, mainCanvas.height);
+    savectx.drawImage(fontCanvas, 0, 0, fontCanvas.width, fontCanvas.height);
+    
 }
 
 function saveImageBlob() {
@@ -160,7 +174,7 @@ function makeNewPDF() {
 
 function addImageToPDF() {
     updateSaveCanvas();
-    doc.addImage(saveCanvas, 'PNG', 0, 0, saveCanvas.width, saveCanvas.height, null, null, 270);
+    doc.addImage(saveCanvas, 'PNG', 0, 0, saveCanvas.width, saveCanvas.height);
     doc.addPage([saveCanvas.height, saveCanvas.width], 'p');
     textInput.value = "";
     textUpdate(); // To clear the text in the image.
@@ -186,4 +200,9 @@ saveButton.addEventListener("click", addImageToPDF, false);
 downloadButton.addEventListener("click", downloadPDF, false);
 
 /* Notes:
+- Client wants the labels to be printed such that his printer's builtin watermark is in a specific position
+    and orienation. The first test run essentially had the label printed upside down. The pdf images were 
+    in landscape orientation but the printer software automatically decided how to rotate them.
+    The issue is that it he wants this mostly automated. He doesn't want to change the printer settings to 
+    print correctly here and then again to print etsy shipping labels correctly.
 */
