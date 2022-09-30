@@ -27,7 +27,7 @@ let ySlider = document.getElementById("ypos");
 let saveButton = document.getElementById("save-button");
 let downloadButton = document.getElementById("download-button");
 
-let dataURLList = [];
+let dataBlobList = [];
 
 function updateDisplayCanvas() {
     displayctx.clearRect(0, 0, displayCanvas.width, displayCanvas.height);
@@ -117,31 +117,32 @@ function textUpdate() {
     updateDisplayCanvas();
 }
 
-function saveImage(type) {
-    // convert the canvas into a data url that is the image encoded as base64.
-    // Then create an html element (an <a> specifically)
+function saveImageBlob() {
     savectx.clearRect(0, 0, saveCanvas.width, saveCanvas.height);
     savectx.drawImage(mainCanvas, 0, 0, saveCanvas.width, saveCanvas.height);
     savectx.drawImage(fontCanvas, 0, 0, saveCanvas.width, saveCanvas.height);
 
-    let saveCanvasURL = saveCanvas.toDataURL("image/png");
-    dataURLList.push(saveCanvasURL);
+    saveCanvas.toBlob((blob) => {
+        dataBlobList.push(blob);
+    },"image/png");
 
     textInput.value = "";
-    updateFontCanvas();
+    updateDisplayCanvas(); // To clear the text in the image.
     downloadButton.disabled = false;
 }
 
-function downloadImages() {
-    let tempElement = document.createElement('a');
-    for (let i = 0; i < dataURLList.length; i++) {
-        tempElement.href = dataURLList[i];
-        tempElement.download = `label_${i}`;
-        tempElement.click();
+function downloadImagesBlob() {
+    let zip = new JSZip();
+    for (let i = 0; i < dataBlobList.length; i++) {
+        zip.file(`label_${i}.png`, dataBlobList[i]);
     }
-    tempElement.remove();
+    zip.generateAsync({ type: "blob" })
+        .then(function (blob) {
+            saveAs(blob, "hello.zip");
+            dataBlobList = [];
+        });
 
-    dataURLList = [];
+    downloadButton.disabled = true;
 }
 
 // This app only needs one image uploaded at a time to be used as a background.
@@ -153,22 +154,8 @@ fontSlider.addEventListener("input", textUpdate, false);
 textInput.addEventListener("input", textUpdate, false);
 xSlider.addEventListener("input", textUpdate, false);
 ySlider.addEventListener("input", textUpdate, false);
-saveButton.addEventListener("click", saveImage, false);
-downloadButton.addEventListener("click", downloadImages, false);
+saveButton.addEventListener("click", saveImageBlob, false);
+downloadButton.addEventListener("click", downloadImagesBlob, false);
 
 /* Notes:
-- Because the display canvas is a smaller version of the main canvas, the text drawn will visually be smaller
-    than what is on the main canvas. Currently, if you tried one background image and then a larger one,
-    the text would *look* bigger on screen because the canvas isn't scaled down to fixed dimensions.
-    Having the display canvas be one size and scaling the image of the main canvas to fit the largest
-    dimension would fix this.
-
-- I want to be able to adjust the position of the text visually, probably using sliders but dragging a box
-    would be even cooler. There are some problems though. Displaying anything on the canvas means drawing
-    pixels onto it. That means I can't just draw text and readjust the position without redrawing the
-    background image and anything else on canvas.
-    A solution is to have two canvases to edit on, each acting as a layer. I then draw the farthest back
-    layer, the background image, onto the display canvas. Next, draw the text layer onto the display canvas.
-    Saving the image will now require a new canvas in which the same process done to the display canvas will
-    be done. However, this canvas will be the same size as the main canvas (the background image canvas).
 */

@@ -5,3 +5,7 @@
 #display-canvas {
     border: 1px solid black
 }
+
+.canvas-flexbox-destretch {
+    align-self: center;
+}
