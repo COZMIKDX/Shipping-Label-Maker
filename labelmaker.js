@@ -26,9 +26,9 @@ let textInput = document.getElementById("text-input");
 let xSlider =  document.getElementById("xpos");
 let ySlider = document.getElementById("ypos");
 let saveButton = document.getElementById("save-button");
-let downloadButton = document.getElementById("download-button");
+let printButton = document.getElementById("print-button");
 
-let doc = new jsPDF('p', 'px', [saveCanvas.height, saveCanvas.width]);
+let doc = new jsPDF('p', 'px', [saveCanvas.height, saveCanvas.width], true);
 
 let dataBlobList = [];
 
@@ -151,7 +151,7 @@ function saveImageBlob() {
 
     textInput.value = "";
     textUpdate(); // To clear the text in the image.
-    downloadButton.disabled = false;
+    printButton.disabled = false;
 
     makePDF();
 }
@@ -169,22 +169,24 @@ function downloadImagesBlob() {
 }
 
 function makeNewPDF() {
-    return new jsPDF('p', 'px', [saveCanvas.height, saveCanvas.width]);
+    return new jsPDF('p', 'px', [saveCanvas.height, saveCanvas.width], true);
 }
 
 function addImageToPDF() {
     updateSaveCanvas();
-    doc.addImage(saveCanvas, 'PNG', 0, 0, saveCanvas.width, saveCanvas.height);
+    doc.addImage(saveCanvas, 'PNG', 0, 0, saveCanvas.width, saveCanvas.height, '', 'FAST');
     doc.addPage([saveCanvas.height, saveCanvas.width], 'p');
     textInput.value = "";
     textUpdate(); // To clear the text in the image.
-    downloadButton.disabled = false;
+    printButton.disabled = false;
 }
 
 function downloadPDF() {
     let length = doc.internal.getNumberOfPages();
     doc.deletePage(length); // delete the last page as it wasn't used to make a label.
-    doc.save("shipping_labels.pdf");
+    // doc.save("shipping_labels.pdf");
+    doc.autoPrint();  // <<--------------------- !!
+    doc.output('dataurlnewwindow');
 }
 
 // This app only needs one image uploaded at a time to be used as a background.
@@ -197,7 +199,7 @@ textInput.addEventListener("input", textUpdate, false);
 xSlider.addEventListener("input", textUpdate, false);
 ySlider.addEventListener("input", textUpdate, false);
 saveButton.addEventListener("click", addImageToPDF, false);
-downloadButton.addEventListener("click", downloadPDF, false);
+printButton.addEventListener("click", downloadPDF, false);
 
 /* Notes:
 - Client wants the labels to be printed such that his printer's builtin watermark is in a specific position
