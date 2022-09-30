@@ -25,15 +25,18 @@
 
                 <textarea id="text-input" rows="4" cols="32"></textarea> <br>
                 
-                <input id="xpos" type="range" min="10" max="200" value="10">
-                <input id="ypos" type="range" min="10" max="200" value="10">
+                <input id="xpos" type="range" min="10" max="200" value="10"> <br>
+                <input id="ypos" type="range" min="10" max="200" value="10"> <br>
                 
+                <input id="save-button" type="button" value="Finish label"> <br>
+                <input id="download-button" type="button" value="Download all" disabled="true"> <br>
                 
                 <!--<button type="button" id="add-address">Add Address</button>-->
                 <!--<div style="background-color: #b8deff; text-align: center; padding: 5px;" id="tempbutton">spawn image</div>-->
             </div>
             <canvas id="main-canvas"></canvas>
             <canvas id="font-canvas"></canvas>
+            <canvas id="save-canvas"></canvas>
             <canvas id="display-canvas"></canvas>
         </div>
         <script src="labelmaker.js" async defer></script>

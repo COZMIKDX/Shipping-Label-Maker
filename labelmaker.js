@@ -12,6 +12,11 @@ fontCanvas.style.display = "none";
 fontctx.font = "10px Helvetica";
 
 /** @type {HTMLCanvasElement} */
+let saveCanvas = document.getElementById("save-canvas");
+let savectx = saveCanvas.getContext("2d");
+saveCanvas.style.display = "none";
+
+/** @type {HTMLCanvasElement} */
 let displayCanvas = document.getElementById("display-canvas");
 let displayctx = displayCanvas.getContext("2d");
 
@@ -19,6 +24,10 @@ let imageInput = document.getElementById("image-upload");
 let textInput = document.getElementById("text-input");
 let xSlider =  document.getElementById("xpos");
 let ySlider = document.getElementById("ypos");
+let saveButton = document.getElementById("save-button");
+let downloadButton = document.getElementById("download-button");
+
+let dataURLList = [];
 
 function updateDisplayCanvas() {
     displayctx.clearRect(0, 0, displayCanvas.width, displayCanvas.height);
@@ -31,6 +40,8 @@ function resizeEditingCanvases(width, height) {
     mainCanvas.width  = width;
     fontCanvas.height = height;
     fontCanvas.width  = width;
+    saveCanvas.height = height;
+    saveCanvas.width  = width;
 }
 
 // May not be needed later when I make the display canvas fixed in size.
@@ -109,6 +120,28 @@ function textUpdate() {
 function saveImage(type) {
     // convert the canvas into a data url that is the image encoded as base64.
     // Then create an html element (an <a> specifically)
+    savectx.clearRect(0, 0, saveCanvas.width, saveCanvas.height);
+    savectx.drawImage(mainCanvas, 0, 0, saveCanvas.width, saveCanvas.height);
+    savectx.drawImage(fontCanvas, 0, 0, saveCanvas.width, saveCanvas.height);
+
+    let saveCanvasURL = saveCanvas.toDataURL("image/png");
+    dataURLList.push(saveCanvasURL);
+
+    textInput.value = "";
+    updateFontCanvas();
+    downloadButton.disabled = false;
+}
+
+function downloadImages() {
+    let tempElement = document.createElement('a');
+    for (let i = 0; i < dataURLList.length; i++) {
+        tempElement.href = dataURLList[i];
+        tempElement.download = `label_${i}`;
+        tempElement.click();
+    }
+    tempElement.remove();
+
+    dataURLList = [];
 }
 
 // This app only needs one image uploaded at a time to be used as a background.
@@ -120,6 +153,8 @@ fontSlider.addEventListener("input", textUpdate, false);
 textInput.addEventListener("input", textUpdate, false);
 xSlider.addEventListener("input", textUpdate, false);
 ySlider.addEventListener("input", textUpdate, false);
+saveButton.addEventListener("click", saveImage, false);
+downloadButton.addEventListener("click", downloadImages, false);
 
 /* Notes:
 - Because the display canvas is a smaller version of the main canvas, the text drawn will visually be smaller
