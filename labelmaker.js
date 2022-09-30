@@ -28,7 +28,7 @@ let ySlider = document.getElementById("ypos");
 let saveButton = document.getElementById("save-button");
 let downloadButton = document.getElementById("download-button");
 
-let doc = new jsPDF('l', 'px', [saveCanvas.width, saveCanvas.height]);
+let doc = new jsPDF('p', 'px', [saveCanvas.height, saveCanvas.width]);
 
 let dataBlobList = [];
 
@@ -155,13 +155,13 @@ function downloadImagesBlob() {
 }
 
 function makeNewPDF() {
-    return new jsPDF('l', 'px', [saveCanvas.width, saveCanvas.height]);
+    return new jsPDF('p', 'px', [saveCanvas.height, saveCanvas.width]);
 }
 
 function addImageToPDF() {
     updateSaveCanvas();
-    doc.addImage(saveCanvas, 'PNG', 0, 0, saveCanvas.width, saveCanvas.height);
-    doc.addPage([saveCanvas.width, saveCanvas.height], 'l');
+    doc.addImage(saveCanvas, 'PNG', 0, 0, saveCanvas.width, saveCanvas.height, null, null, 270);
+    doc.addPage([saveCanvas.height, saveCanvas.width], 'p');
     textInput.value = "";
     textUpdate(); // To clear the text in the image.
     downloadButton.disabled = false;
