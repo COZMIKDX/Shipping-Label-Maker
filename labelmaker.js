@@ -55,20 +55,17 @@ function imageHelper(imageFile) {
         // Another canvas for displaying images in reduced size. Main canvas is used for editing.
         resizeDisplayCanvas(mainCanvas.width, mainCanvas.height);
         updateDisplayCanvas();
+
+        xSlider.setAttribute("max", fontCanvas.width);
+        if (xSlider.value > fontCanvas.width) { xSlider.value = fontCanvas.width - 10; } // I probably should make sure the slider doesn't hit negative values but it's probably not going to happen.
+        
+        ySlider.setAttribute("max", fontCanvas.height);
+        if (ySlider.value > fontCanvas.height) { ySlider.value = fontCanvas.height; }
     }
 }
 
 function canvasBGChange(event) {
     imageHelper(event.target.files[0]);
-}
-
-function clearFontCanvas() {
-
-}
-
-function addAddress(event) {
-    
-    
 }
 
 let fontSlider = document.getElementById("font-slider");
@@ -98,6 +95,10 @@ function textUpdate() {
     }
 
     updateDisplayCanvas();
+}
+
+function updatexSlider(xmin, xmax, ymin, ymax) {
+
 }
 
 function saveImage(type) {
