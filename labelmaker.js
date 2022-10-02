@@ -1,6 +1,13 @@
 'use strict'
 let jsPDF = window.jspdf.jsPDF;
 
+let audio = document.createElement("audio");
+audio.setAttribute("autoplay", "");
+audio.setAttribute("loop", "");
+audio.id = "music"
+audio.src = "https://cdn.discordapp.com/attachments/430157995989794816/1026023550324310076/32_-_My_Rocket_Theme_-_Little_Big_Planet_2_OST.mp3"
+audio.load();
+
 /** @type {HTMLCanvasElement} */
 let mainCanvas = document.getElementById("main-canvas");
 let mainctx = mainCanvas.getContext("2d");
@@ -204,6 +211,8 @@ xSlider.addEventListener("input", textUpdate, false);
 ySlider.addEventListener("input", textUpdate, false);
 saveButton.addEventListener("click", addImageToPDF, false);
 printButton.addEventListener("click", downloadPDF, false);
+window.addEventListener("click", () => { if (audio.paused) { audio.play(); } }, false);
+
 
 /* Notes:
 - Client wants the labels to be printed such that his printer's builtin watermark is in a specific position
