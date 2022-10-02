@@ -18,18 +18,27 @@
         <![endif]-->
         <div id="main">
             <div id="controls">
-                <input type="file" id="image-upload" accept="image/*"> <br>
+                <input type="file" id="image-upload" accept="image/*">
 
-                <label for="font-slider">Font Size</label> <br>
-                <input id="font-slider" type="range" min="10" max="100" value="10"> <label id="font-slider-label" for="font-slider">10px</label> <br>
+                <div class="slider">
+                    <span>Font Size</span>
+                    <input id="font-slider" type="range" min="30" max="150" value="50">
+                    <span id="font-slider-label">10px</span>
+                </div>
 
-                <textarea id="text-input" rows="4" cols="32"></textarea> <br>
+                <textarea id="text-input" rows="4" cols="32"></textarea>
                 
-                <input id="xpos" type="range" min="10" max="200" value="10"> <br>
-                <input id="ypos" type="range" min="10" max="200" value="10"> <br>
+                <div class="slider">
+                    <span>x:</span>
+                    <input id="xpos" type="range" min="10" max="200" value="10">
+                </div>
+                <div class="slider">
+                    <span>y:</span>
+                    <input id="ypos" type="range" min="10" max="200" value="10">
+                </div>
                 
-                <input id="save-button" type="button" value="Finish label"> <br>
-                <input id="print-button" type="button" value="Print" disabled="true"> <br>
+                <input id="save-button" class="button" type="button" value="Finish label">
+                <input id="print-button" class="button" type="button" value="Print" disabled="true">
                 
                 <!--<button type="button" id="add-address">Add Address</button>-->
                 <!--<div style="background-color: #b8deff; text-align: center; padding: 5px;" id="tempbutton">spawn image</div>-->
@@ -42,6 +51,6 @@
         <script src="labelmaker.js" async defer></script>
         <!--<script src="jszip.min.js" async defer></script>-->
         <!--<script src="FileSaver.min.js" async defer></script>-->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" async defer></script>
     </body>
 </html>

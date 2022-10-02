@@ -9,3 +9,39 @@
 .canvas-flexbox-destretch {
     align-self: center;
 }
+
+#controls {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    zoom: 1.3;
+    background: #e4f2ff;
+    padding-top: 10px;
+    border-left-width: 10px;
+    padding-bottom: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    border-radius: 8px;
+}
+
+#text-input {
+    border-radius: 5px;
+}
+
+.slider {
+    display: flex;
+    flex-direction: row;
+}
+
+.button {
+    background-color: white;
+}
+
+.button:hover {
+    background-color: #cee6ff
+}
+
+#display-canvas {
+    margin-left: 10px;
+}

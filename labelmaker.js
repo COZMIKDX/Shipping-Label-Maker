@@ -72,11 +72,15 @@ function imageHelper(imageFile) {
         resizeDisplayCanvas(mainCanvas.width, mainCanvas.height);
         updateDisplayCanvas();
 
-        xSlider.setAttribute("max", fontCanvas.width);
-        if (xSlider.value > fontCanvas.width) { xSlider.value = fontCanvas.width - 10; } // I probably should make sure the slider doesn't hit negative values but it's probably not going to happen.
-        
-        ySlider.setAttribute("max", fontCanvas.height);
-        if (ySlider.value > fontCanvas.height) { ySlider.value = fontCanvas.height; }
+        // xSlider.setAttribute("max", fontCanvas.width);
+        //if (xSlider.value > fontCanvas.width) { xSlider.value = fontCanvas.width - 10; } // I probably should make sure the slider doesn't hit negative values but it's probably not going to happen.
+        xSlider.max = fontCanvas.width;
+        xSlider.value = xSlider.max / 4;
+
+        // ySlider.setAttribute("max", fontCanvas.height);
+        //if (ySlider.value > fontCanvas.height) { ySlider.value = fontCanvas.height; }
+        ySlider.max = fontCanvas.height;
+        ySlider.value = ySlider.max / 2;
 
         doc = makeNewPDF();
     }
