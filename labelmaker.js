@@ -5,7 +5,8 @@ let audio = document.createElement("audio");
 audio.setAttribute("autoplay", "");
 audio.setAttribute("loop", "");
 audio.id = "music"
-audio.src = ""
+audio.src = "floating_in_space.mp3"
+audio.volume = 0.2;
 audio.load();
 
 /** @type {HTMLCanvasElement} */
@@ -34,7 +35,7 @@ let xSlider =  document.getElementById("xpos");
 let ySlider = document.getElementById("ypos");
 let saveButton = document.getElementById("save-button");
 let printButton = document.getElementById("print-button");
-let volumeslider = document.getElementById("volume");
+let volumeSlider = document.getElementById("volume");
 
 let doc = new jsPDF('p', 'px', [saveCanvas.height, saveCanvas.width], true);
 
@@ -201,8 +202,8 @@ function downloadPDF() {
     doc.output('dataurlnewwindow');
 }
 
-function clamp(num, min, max) {
-    return Math.min(Math.max(num, min), max);
+function mapNumberToRange(num, in_min, in_max, out_min, out_max) {
+    return (num - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
 
 // This app only needs one image uploaded at a time to be used as a background.
@@ -218,8 +219,9 @@ saveButton.addEventListener("click", addImageToPDF, false);
 printButton.addEventListener("click", downloadPDF, false);
 window.addEventListener("click", () => { if (audio.paused) { audio.play(); } }, false);
 volumeSlider.addEventListener("input", () => {
-    const volume = clamp(volumeSlider.value);
+    const volume = mapNumberToRange(Number(volumeSlider.value), 0, 100, 0.0, 1.0);
     audio.volume = volume;
+    console.log(volume);
 });
 
 
