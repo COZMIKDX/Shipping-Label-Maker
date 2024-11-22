@@ -10,7 +10,7 @@
         <title></title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="style.css">
+        <link rel="stylesheet" href="style.css">        
     </head>
     <body>
         <!--[if lt IE 7]>
@@ -39,6 +39,11 @@
                 
                 <input id="save-button" class="button" type="button" value="Finish label">
                 <input id="print-button" class="button" type="button" value="Print" disabled="true">
+
+                <div class="slider">
+                    <span>Volume: </span>
+                    <input id="volume" type="range" min="0" max="100" value="20">
+                </div>
                 
                 <!--<button type="button" id="add-address">Add Address</button>-->
                 <!--<div style="background-color: #b8deff; text-align: center; padding: 5px;" id="tempbutton">spawn image</div>-->
@@ -48,9 +53,11 @@
             <canvas id="save-canvas" class="canvas-flexbox-destretch non-display-canvas"></canvas>
             <canvas id="display-canvas" class="canvas-flexbox-destretch"></canvas>
         </div>
-        <script src="labelmaker.js" defer></script>
+        
         <!--<script src="jszip.min.js" async defer></script>-->
         <!--<script src="FileSaver.min.js" async defer></script>-->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" async defer></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+        <script src="labelmaker.js"></script>
     </body>
 </html>
