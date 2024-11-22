@@ -5,7 +5,7 @@ let audio = document.createElement("audio");
 audio.setAttribute("autoplay", "");
 audio.setAttribute("loop", "");
 audio.id = "music"
-audio.src = "https://cdn.discordapp.com/attachments/430157995989794816/1026023550324310076/32_-_My_Rocket_Theme_-_Little_Big_Planet_2_OST.mp3"
+audio.src = ""
 audio.load();
 
 /** @type {HTMLCanvasElement} */
@@ -34,6 +34,7 @@ let xSlider =  document.getElementById("xpos");
 let ySlider = document.getElementById("ypos");
 let saveButton = document.getElementById("save-button");
 let printButton = document.getElementById("print-button");
+let volumeslider = document.getElementById("volume");
 
 let doc = new jsPDF('p', 'px', [saveCanvas.height, saveCanvas.width], true);
 
@@ -200,6 +201,10 @@ function downloadPDF() {
     doc.output('dataurlnewwindow');
 }
 
+function clamp(num, min, max) {
+    return Math.min(Math.max(num, min), max);
+}
+
 // This app only needs one image uploaded at a time to be used as a background.
 // So changing
 imageInput.addEventListener("change", canvasBGChange, false);
@@ -212,6 +217,10 @@ ySlider.addEventListener("input", textUpdate, false);
 saveButton.addEventListener("click", addImageToPDF, false);
 printButton.addEventListener("click", downloadPDF, false);
 window.addEventListener("click", () => { if (audio.paused) { audio.play(); } }, false);
+volumeSlider.addEventListener("input", () => {
+    const volume = clamp(volumeSlider.value);
+    audio.volume = volume;
+});
 
 
 /* Notes:
